@@ -9,6 +9,7 @@ import it.prova.pokeronline.service.UtenteService;
 import it.prova.pokeronline.web.api.exception.PermessiNonSufficientiException;
 import it.prova.pokeronline.web.api.exception.RuoloNotFoundException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
+import it.prova.pokeronline.web.api.exception.UtenteNonTrovatoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -75,8 +76,22 @@ public class GestioneTavoloController {
     // elencandoli grazie al ControllerAdvice
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Tavolo createNew(@Valid @RequestBody Tavolo tavoloInput) {
-        return tavoloService.inserisciNuovo(tavoloInput);
+    public Tavolo createNew(@Valid @RequestBody Tavolo tavoloInput, @RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if(utente==null){
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        Ruolo ruolo = utente.getRuolo();
+        if (ruolo.getCodice().equals("ROLE_PLAYER")) {
+            throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
+
+        } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER") || ruolo.getCodice().equals("ROLE_ADMIN")) {
+            return tavoloService.inserisciNuovo(tavoloInput);
+
+        }
+
+
+        throw new RuoloNotFoundException("Il ruolo non è associato a quelli nel db");
     }
 
     @PutMapping("/{id}")
