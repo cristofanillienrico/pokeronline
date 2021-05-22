@@ -1,6 +1,7 @@
 package it.prova.pokeronline.service;
 
 import it.prova.pokeronline.model.Tavolo;
+import it.prova.pokeronline.model.Utente;
 
 import java.util.List;
 
@@ -19,6 +20,10 @@ public interface TavoloService {
     void rimuovi(Tavolo tavoloInstance);
 
     List<Tavolo> findByExample(Tavolo example);
+
+    List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione);
+
+    Tavolo findByIdAndUtenteCreazione(Long id ,Utente utenteCreazione);
 
 
 }

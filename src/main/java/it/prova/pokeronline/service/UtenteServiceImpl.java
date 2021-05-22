@@ -48,4 +48,9 @@ public class UtenteServiceImpl implements UtenteService {
     public List<Utente> findByExample(Utente example) {
         return null;
     }
+
+    @Override
+    public Utente findByUsername(String username) {
+        return repository.findByUsername(username);
+    }
 }

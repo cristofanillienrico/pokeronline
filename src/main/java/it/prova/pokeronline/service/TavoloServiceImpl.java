@@ -1,6 +1,7 @@
 package it.prova.pokeronline.service;
 
 import it.prova.pokeronline.model.Tavolo;
+import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.tavolo.TavoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TavoloServiceImpl implements TavoloService{
+public class TavoloServiceImpl implements TavoloService {
 
     @Autowired
     private TavoloRepository repository;
@@ -47,5 +48,15 @@ public class TavoloServiceImpl implements TavoloService{
     @Override
     public List<Tavolo> findByExample(Tavolo example) {
         return null;
+    }
+
+    @Override
+    public List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione) {
+        return repository.findAllByUtenteCreazione(utenteCreazione);
+    }
+
+    @Override
+    public Tavolo findByIdAndUtenteCreazione(Long id, Utente utenteCreazione) {
+        return repository.findByIdAndUtenteCreazione(id, utenteCreazione);
     }
 }

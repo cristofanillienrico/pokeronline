@@ -10,8 +10,13 @@ public class RuoloServiceImpl implements RuoloService {
     @Autowired
     private RuoloRepository repository;
 
+//    @Override
+//    public Ruolo findByUtenteUsername(String username) {
+//        return repository.findByUtenteUsername(username);
+//    }
+
     @Override
-    public Ruolo findByUtenteUsername(String username) {
-        return repository.findByUtenteUsername(username);
+    public Ruolo findById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }

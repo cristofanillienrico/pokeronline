@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RuoloRepository extends CrudRepository<Ruolo, Long> {
 
-    @Query("from Ruolo r left join fetch Utente u where u.username=:username")
-    Ruolo findByUtenteUsername(String username);
+//    @Query("from Ruolo r join fetch Utente u where u.username=?1")
+//    Ruolo findByUtenteUsername(String username);
 }

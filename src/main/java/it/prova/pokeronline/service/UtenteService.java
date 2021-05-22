@@ -20,4 +20,6 @@ public interface UtenteService {
 
     List<Utente> findByExample(Utente example);
 
+    Utente findByUsername(String username);
+
 }

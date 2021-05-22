@@ -1,5 +1,6 @@
 package it.prova.pokeronline.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 // il player solo giocare e per semplicità l’ADMIN può fare tutto).
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Entity
 @Table(name = "ruolo")
 public class Ruolo {

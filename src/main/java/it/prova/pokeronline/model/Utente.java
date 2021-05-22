@@ -187,6 +187,14 @@ public class Utente {
         this.tavolo = tavolo;
     }
 
+    public Ruolo getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(Ruolo ruolo) {
+        this.ruolo = ruolo;
+    }
+
     @Override
     public String toString() {
         return "Utente{" +
