@@ -102,14 +102,34 @@ public class GestioneTavoloController {
     }
 
     @PutMapping("/{id}")
-    public Tavolo update(@Valid @RequestBody Tavolo tavoloInput, @PathVariable(required = true) Long id) {
-        Tavolo tavolo = tavoloService.caricaSingoloElemento(id);
+    public Tavolo update(@Valid @RequestBody Tavolo tavoloInput, @PathVariable(required = true) Long id, @RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        Ruolo ruolo = utente.getRuolo();
+        if (ruolo.getCodice().equals("ROLE_PLAYER")) {
+            throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
-        if (tavolo == null)
-            throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+        } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
+            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, utente);
+            if (tavolo == null) {
+                throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
-        tavoloInput.setId(id);
-        return tavoloService.aggiorna(tavoloInput);
+            }
+
+            return tavoloService.aggiorna(tavoloInput);
+
+        } else if (ruolo.getCodice().equals("ROLE_ADMIN")) {
+            Tavolo tavolo = tavoloService.caricaSingoloElemento(id);
+            if (tavolo == null) {
+                throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+
+            }
+            return tavoloService.aggiorna(tavoloInput);
+        }
+
+        throw new RuoloNotFoundException("Il ruolo non è associato a quelli nel db");
     }
 
     @DeleteMapping("/{id}")
