@@ -28,5 +28,7 @@ public interface TavoloService {
 
     Tavolo findTavoloByUtentiContains(Utente utente);
 
+    List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata);
+
 
 }

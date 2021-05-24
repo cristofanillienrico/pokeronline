@@ -72,4 +72,9 @@ public class TavoloServiceImpl implements TavoloService {
     public Tavolo findTavoloByUtentiContains(Utente utente) {
         return repository.findTavoloByUtentiContains(utente);
     }
+
+    @Override
+    public List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata) {
+        return repository.findAllByEsperienzaMinimaIsLessThanEqual(esperienzaAccumulata);
+    }
 }

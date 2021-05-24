@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -68,6 +69,54 @@ public class PlayManagementController {
 
         return tavoliDiUtente;
 
+
+    }
+
+    @PutMapping("/abbandonapartita")
+    @ResponseStatus(HttpStatus.OK)
+    public void abbandonaPartita(@RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        if (utente.getTavolo() == null) {
+
+            throw new TavoloNotFoundException("L'utente non sta giocando nessuna partita");
+
+        }
+
+        Long nuovaEsperienza = utente.getEsperienzaAccumulata();
+        utente.setEsperienzaAccumulata(++nuovaEsperienza);
+        utente.setTavolo(null);
+        utenteService.aggiorna(utente);
+
+    }
+
+    @GetMapping("/tavolipapabili")
+    public List<Tavolo> ricercaTavoliPapabili(@RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        List<Tavolo> tavoliPapabili = tavoloService.findAllByEsperienzaMinimaIsLessThanEqual(utente.getEsperienzaAccumulata());
+        return tavoliPapabili;
+
+    }
+
+    //se tavolo non contiene gia utente
+    //se giocatore ha abbastanza esperienza e abbastanza soldi
+    //gioca
+    //lascia tavolo
+    @PostMapping("/{idTavolo}")
+    @ResponseStatus(HttpStatus.OK)
+    public void giocaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo, @RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+
+        utente.setCreditoAccumulato(utente.getCreditoAccumulato() + creditoComprato);
+        utenteService.aggiorna(utente);
 
     }
 
