@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TavoloServiceImpl implements TavoloService {
@@ -65,5 +66,10 @@ public class TavoloServiceImpl implements TavoloService {
     @Override
     public Tavolo findByIdAndUtenteCreazione(Long id, Utente utenteCreazione) {
         return repository.findByIdAndUtenteCreazione(id, utenteCreazione);
+    }
+
+    @Override
+    public Tavolo findTavoloByUtentiContains(Utente utente) {
+        return repository.findTavoloByUtentiContains(utente);
     }
 }

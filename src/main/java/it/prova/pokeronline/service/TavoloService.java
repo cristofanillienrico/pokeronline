@@ -4,6 +4,7 @@ import it.prova.pokeronline.model.Tavolo;
 import it.prova.pokeronline.model.Utente;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TavoloService {
 
@@ -24,6 +25,8 @@ public interface TavoloService {
     List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione);
 
     Tavolo findByIdAndUtenteCreazione(Long id ,Utente utenteCreazione);
+
+    Tavolo findTavoloByUtentiContains(Utente utente);
 
 
 }

@@ -6,10 +6,13 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.RuoloService;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
+import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 import it.prova.pokeronline.web.api.exception.UtenteNonTrovatoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 
 /* Play management (in genere a carico del PLAYER):
@@ -51,13 +54,19 @@ public class PlayManagementController {
 
     }
 
-    @PostMapping("/lastgame")
+    @GetMapping("/lastgame")
     public Tavolo lastGame(@RequestHeader("username") String username) {
         Utente utente = utenteService.findByUsername(username);
         if (utente == null) {
             throw new UtenteNonTrovatoException("Utente non trovato");
         }
+        Tavolo tavoliDiUtente = tavoloService.findTavoloByUtentiContains(utente);
 
+        if (tavoliDiUtente == null) {
+            throw new TavoloNotFoundException("L'utente non è in nessun tavolo ");
+        }
+
+        return tavoliDiUtente;
 
 
     }

@@ -5,10 +5,13 @@ import it.prova.pokeronline.model.Utente;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTavoloRepository {
 
     List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione);
 
     Tavolo findByIdAndUtenteCreazione(Long id, Utente utenteCreazione);
+
+    Tavolo findTavoloByUtentiContains(Utente utente);
 }
