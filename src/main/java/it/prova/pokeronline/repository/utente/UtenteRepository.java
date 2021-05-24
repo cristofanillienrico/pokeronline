@@ -5,7 +5,7 @@ import it.prova.pokeronline.model.Utente;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UtenteRepository extends CrudRepository<Utente, Long> {
+public interface UtenteRepository extends CrudRepository<Utente, Long>, CustomUtenteRepository {
 
     Utente findByUsername(String username);
 
