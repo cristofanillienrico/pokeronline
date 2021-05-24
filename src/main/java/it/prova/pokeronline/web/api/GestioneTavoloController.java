@@ -165,8 +165,20 @@ public class GestioneTavoloController {
     }
 
     @PostMapping("/search")
-    public List<Tavolo> search(@RequestBody Tavolo example) {
-        return tavoloService.findByExample(example);
+    public List<Tavolo> search(@RequestBody Tavolo example, @RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        Ruolo ruolo = utente.getRuolo();
+        if (ruolo.getCodice().equals("ROLE_PLAYER")) {
+            throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
+
+        } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER") || ruolo.getCodice().equals("ROLE_ADMIN")) {
+            return tavoloService.findByExample(example);
+
+        }
+        throw new RuoloNotFoundException("Il ruolo non è associato a quelli nel db");
     }
 
 }

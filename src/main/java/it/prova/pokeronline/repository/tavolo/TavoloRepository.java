@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface TavoloRepository extends CrudRepository<Tavolo, Long> {
+public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTavoloRepository {
 
     List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione);
 
-    Tavolo findByIdAndUtenteCreazione(Long id ,Utente utenteCreazione);
+    Tavolo findByIdAndUtenteCreazione(Long id, Utente utenteCreazione);
 }

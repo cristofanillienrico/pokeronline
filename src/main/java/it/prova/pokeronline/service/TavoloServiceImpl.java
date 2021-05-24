@@ -54,7 +54,7 @@ public class TavoloServiceImpl implements TavoloService {
 
     @Override
     public List<Tavolo> findByExample(Tavolo example) {
-        return null;
+        return repository.findByExample(example);
     }
 
     @Override
