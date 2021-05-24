@@ -10,6 +10,6 @@ public class UtenteNonTrovatoException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public UtenteNonTrovatoException(String message) {
-        super(message);
+        super("Book id not found : " );
     }
 }

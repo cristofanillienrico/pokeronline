@@ -37,6 +37,9 @@ public class GestioneTavoloController {
     @GetMapping
     public List<Tavolo> getAll(@RequestHeader("username") String username) {
         Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
         Ruolo ruolo = utente.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
@@ -53,7 +56,11 @@ public class GestioneTavoloController {
     @GetMapping("/{id}")
     public Tavolo findById(@PathVariable(value = "id", required = true) long id, @RequestHeader("username") String username) {
         Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
         Ruolo ruolo = utente.getRuolo();
+
         Tavolo tavolo = null;
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
@@ -78,7 +85,7 @@ public class GestioneTavoloController {
     @ResponseStatus(HttpStatus.CREATED)
     public Tavolo createNew(@Valid @RequestBody Tavolo tavoloInput, @RequestHeader("username") String username) {
         Utente utente = utenteService.findByUsername(username);
-        if(utente==null){
+        if (utente == null) {
             throw new UtenteNonTrovatoException("Utente non trovato");
         }
         Ruolo ruolo = utente.getRuolo();
@@ -107,13 +114,34 @@ public class GestioneTavoloController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable(required = true) Long id) {
-        Tavolo tavolo = tavoloService.caricaSingoloElemento(id);
+    public void delete(@PathVariable(required = true) Long id, @RequestHeader("username") String username) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            throw new UtenteNonTrovatoException("Utente non trovato");
+        }
+        Ruolo ruolo = utente.getRuolo();
+        if (ruolo.getCodice().equals("ROLE_PLAYER")) {
+            throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
-        if (tavolo == null)
-            throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+        } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
+            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, utente);
+            if (tavolo == null) {
+                throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
-        tavoloService.rimuovi(tavolo);
+            }
+
+            tavoloService.rimuovi(tavolo);
+
+        } else if (ruolo.getCodice().equals("ROLE_ADMIN")) {
+            Tavolo tavolo = tavoloService.caricaSingoloElemento(id);
+            if (tavolo == null) {
+                throw new TavoloNotFoundException("Tavolo not found con id: " + id);
+
+            }
+            tavoloService.rimuovi(tavolo);
+        }
+
+
     }
 
     @PostMapping("/search")
