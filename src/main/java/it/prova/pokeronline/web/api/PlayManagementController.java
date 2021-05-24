@@ -6,6 +6,7 @@ import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.service.RuoloService;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
+import it.prova.pokeronline.web.api.exception.PermessiNonSufficientiException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 import it.prova.pokeronline.web.api.exception.UtenteNonTrovatoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,16 +108,53 @@ public class PlayManagementController {
     //se giocatore ha abbastanza esperienza e abbastanza soldi
     //gioca
     //lascia tavolo
-    @PostMapping("/{idTavolo}")
+    @PostMapping("/gioca/{idTavolo}")
     @ResponseStatus(HttpStatus.OK)
-    public void giocaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo, @RequestHeader("username") String username) {
+    public String giocaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo, @RequestHeader("username") String username) {
         Utente utente = utenteService.findByUsername(username);
         if (utente == null) {
             throw new UtenteNonTrovatoException("Utente non trovato");
         }
+        Tavolo tavolo = tavoloService.caricaSingoloElemento(idTavolo);
 
-        utente.setCreditoAccumulato(utente.getCreditoAccumulato() + creditoComprato);
+        if (tavolo == null) {
+            throw new TavoloNotFoundException("L'utente non è in nessun tavolo ");
+        }
+
+        if (tavolo.getUtenti().contains(utente)) {
+            throw new PermessiNonSufficientiException("Sei già in quel tavolo");
+        }
+        if (tavolo.getEsperienzaMinima() > utente.getEsperienzaAccumulata()) {
+            throw new PermessiNonSufficientiException("Non hai abbastanza esperienza");
+        }
+        if (tavolo.getCifraMinima() > utente.getCreditoAccumulato()) {
+            throw new PermessiNonSufficientiException("Non hai abbastanza soldi");
+        }
+
+        //ora inizia la partita vera e propria
+        double segno = Math.random();
+
+        if (segno >= 0.5) {
+            segno = 1;
+        } else {
+            segno = -1;
+        }
+
+        Integer somma = (int) (Math.random() * 1000);
+        Double tot = segno * somma;
+
+        Double creditoResiduo = utente.getCreditoAccumulato() + tot;
+        if (creditoResiduo < 0) {
+            utente.setCreditoAccumulato(0d);
+            utenteService.aggiorna(utente);
+            return "Hai esaurito il credito";
+
+        }
+
+        utente.setCreditoAccumulato(creditoResiduo);
         utenteService.aggiorna(utente);
+        return "Partita conclusa il tuo credito è " + utente.getCreditoAccumulato();
+
 
     }
 
