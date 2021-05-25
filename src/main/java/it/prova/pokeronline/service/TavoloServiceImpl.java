@@ -1,14 +1,13 @@
 package it.prova.pokeronline.service;
 
 import it.prova.pokeronline.model.Tavolo;
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 import it.prova.pokeronline.repository.tavolo.TavoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TavoloServiceImpl implements TavoloService {
@@ -59,18 +58,18 @@ public class TavoloServiceImpl implements TavoloService {
     }
 
     @Override
-    public List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione) {
-        return repository.findAllByUtenteCreazione(utenteCreazione);
+    public List<Tavolo> findAllByUtenteCreazione(User userCreazione) {
+        return repository.findAllByUtenteCreazione(userCreazione);
     }
 
     @Override
-    public Tavolo findByIdAndUtenteCreazione(Long id, Utente utenteCreazione) {
-        return repository.findByIdAndUtenteCreazione(id, utenteCreazione);
+    public Tavolo findByIdAndUtenteCreazione(Long id, User userCreazione) {
+        return repository.findByIdAndUtenteCreazione(id, userCreazione);
     }
 
     @Override
-    public Tavolo findTavoloByUtentiContains(Utente utente) {
-        return repository.findTavoloByUtentiContains(utente);
+    public Tavolo findTavoloByUtentiContains(User user) {
+        return repository.findTavoloByUtentiContains(user);
     }
 
     @Override

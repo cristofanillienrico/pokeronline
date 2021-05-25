@@ -2,7 +2,7 @@ package it.prova.pokeronline.web.api;
 
 
 import it.prova.pokeronline.model.Tavolo;
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 import it.prova.pokeronline.service.RuoloService;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 
 /* Play management (in genere a carico del PLAYER):
@@ -46,26 +45,26 @@ public class PlayManagementController {
     @PostMapping("/{creditoComprato}")
     @ResponseStatus(HttpStatus.OK)
     public void compraCredito(@PathVariable(value = "creditoComprato", required = true) Double creditoComprato, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
 
-        utente.setCreditoAccumulato(utente.getCreditoAccumulato() + creditoComprato);
-        utenteService.aggiorna(utente);
+        user.setCreditoAccumulato(user.getCreditoAccumulato() + creditoComprato);
+        utenteService.aggiorna(user);
 
     }
 
     @GetMapping("/lastgame")
     public Tavolo lastGame(@RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Tavolo tavoliDiUtente = tavoloService.findTavoloByUtentiContains(utente);
+        Tavolo tavoliDiUtente = tavoloService.findTavoloByUtentiContains(user);
 
         if (tavoliDiUtente == null) {
-            throw new TavoloNotFoundException("L'utente non è in nessun tavolo ");
+            throw new TavoloNotFoundException("L'user non è in nessun tavolo ");
         }
 
         return tavoliDiUtente;
@@ -76,30 +75,30 @@ public class PlayManagementController {
     @PutMapping("/abbandonapartita")
     @ResponseStatus(HttpStatus.OK)
     public void abbandonaPartita(@RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        if (utente.getTavolo() == null) {
+        if (user.getTavolo() == null) {
 
-            throw new TavoloNotFoundException("L'utente non sta giocando nessuna partita");
+            throw new TavoloNotFoundException("L'user non sta giocando nessuna partita");
 
         }
 
-        Long nuovaEsperienza = utente.getEsperienzaAccumulata();
-        utente.setEsperienzaAccumulata(++nuovaEsperienza);
-        utente.setTavolo(null);
-        utenteService.aggiorna(utente);
+        Long nuovaEsperienza = user.getEsperienzaAccumulata();
+        user.setEsperienzaAccumulata(++nuovaEsperienza);
+        user.setTavolo(null);
+        utenteService.aggiorna(user);
 
     }
 
     @GetMapping("/tavolipapabili")
     public List<Tavolo> ricercaTavoliPapabili(@RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        List<Tavolo> tavoliPapabili = tavoloService.findAllByEsperienzaMinimaIsLessThanEqual(utente.getEsperienzaAccumulata());
+        List<Tavolo> tavoliPapabili = tavoloService.findAllByEsperienzaMinimaIsLessThanEqual(user.getEsperienzaAccumulata());
         return tavoliPapabili;
 
     }
@@ -111,23 +110,23 @@ public class PlayManagementController {
     @PostMapping("/gioca/{idTavolo}")
     @ResponseStatus(HttpStatus.OK)
     public String giocaPartita(@PathVariable(value = "idTavolo", required = true) Long idTavolo, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
         Tavolo tavolo = tavoloService.caricaSingoloElemento(idTavolo);
 
         if (tavolo == null) {
-            throw new TavoloNotFoundException("L'utente non è in nessun tavolo ");
+            throw new TavoloNotFoundException("L'user non è in nessun tavolo ");
         }
 
-        if (tavolo.getUtenti().contains(utente)) {
+        if (tavolo.getUtenti().contains(user)) {
             throw new PermessiNonSufficientiException("Sei già in quel tavolo");
         }
-        if (tavolo.getEsperienzaMinima() > utente.getEsperienzaAccumulata()) {
+        if (tavolo.getEsperienzaMinima() > user.getEsperienzaAccumulata()) {
             throw new PermessiNonSufficientiException("Non hai abbastanza esperienza");
         }
-        if (tavolo.getCifraMinima() > utente.getCreditoAccumulato()) {
+        if (tavolo.getCifraMinima() > user.getCreditoAccumulato()) {
             throw new PermessiNonSufficientiException("Non hai abbastanza soldi");
         }
 
@@ -143,17 +142,17 @@ public class PlayManagementController {
         Integer somma = (int) (Math.random() * 1000);
         Double tot = segno * somma;
 
-        Double creditoResiduo = utente.getCreditoAccumulato() + tot;
+        Double creditoResiduo = user.getCreditoAccumulato() + tot;
         if (creditoResiduo < 0) {
-            utente.setCreditoAccumulato(0d);
-            utenteService.aggiorna(utente);
+            user.setCreditoAccumulato(0d);
+            utenteService.aggiorna(user);
             return "Hai esaurito il credito";
 
         }
 
-        utente.setCreditoAccumulato(creditoResiduo);
-        utenteService.aggiorna(utente);
-        return "Partita conclusa il tuo credito è " + utente.getCreditoAccumulato();
+        user.setCreditoAccumulato(creditoResiduo);
+        utenteService.aggiorna(user);
+        return "Partita conclusa il tuo credito è " + user.getCreditoAccumulato();
 
 
     }

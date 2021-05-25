@@ -1,10 +1,9 @@
 package it.prova.pokeronline.service;
 
 import it.prova.pokeronline.model.Tavolo;
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TavoloService {
 
@@ -22,11 +21,11 @@ public interface TavoloService {
 
     List<Tavolo> findByExample(Tavolo example);
 
-    List<Tavolo> findAllByUtenteCreazione(Utente utenteCreazione);
+    List<Tavolo> findAllByUtenteCreazione(User userCreazione);
 
-    Tavolo findByIdAndUtenteCreazione(Long id ,Utente utenteCreazione);
+    Tavolo findByIdAndUtenteCreazione(Long id , User userCreazione);
 
-    Tavolo findTavoloByUtentiContains(Utente utente);
+    Tavolo findTavoloByUtentiContains(User user);
 
     List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata);
 

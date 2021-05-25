@@ -1,6 +1,6 @@
 package it.prova.pokeronline.service;
 
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 import it.prova.pokeronline.repository.utente.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,42 +16,42 @@ public class UtenteServiceImpl implements UtenteService {
 
 
     @Override
-    public List<Utente> listAllElements() {
-        return (List<Utente>) repository.findAll();
+    public List<User> listAllElements() {
+        return (List<User>) repository.findAll();
     }
 
     @Override
-    public Utente caricaSingoloElemento(Long id) {
+    public User caricaSingoloElemento(Long id) {
         return repository.findById(id).orElse(null);
     }
 
     @Override
-    public Utente caricaSingoloElementoEager(Long id) {
+    public User caricaSingoloElementoEager(Long id) {
         return null;
     }
 
     @Transactional
-    public Utente aggiorna(Utente utenteInstance) {
-        return repository.save(utenteInstance);
+    public User aggiorna(User userInstance) {
+        return repository.save(userInstance);
     }
 
     @Transactional
-    public Utente inserisciNuovo(Utente utenteInstance) {
-        return repository.save(utenteInstance);
+    public User inserisciNuovo(User userInstance) {
+        return repository.save(userInstance);
     }
 
     @Transactional
-    public void rimuovi(Utente utenteInstance) {
-        repository.delete(utenteInstance);
+    public void rimuovi(User userInstance) {
+        repository.delete(userInstance);
     }
 
     @Override
-    public List<Utente> findByExample(Utente example) {
+    public List<User> findByExample(User example) {
         return null;
     }
 
     @Override
-    public Utente findByUsername(String username) {
+    public User findByUsername(String username) {
         return repository.findByUsername(username);
     }
 }

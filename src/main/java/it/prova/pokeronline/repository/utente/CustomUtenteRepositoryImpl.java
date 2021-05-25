@@ -1,6 +1,6 @@
 package it.prova.pokeronline.repository.utente;
 
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -16,12 +16,12 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Utente> findByExample(Utente example) {
+    public List<User> findByExample(User example) {
         Map<String, Object> paramaterMap = new HashMap<String, Object>();
         List<String> whereClauses = new ArrayList<String>();
 
         StringBuilder queryBuilder = new StringBuilder(
-                "select DISTINCT u from Utente u left join fetch u.ruoli r where u.id = u.id ");
+                "select DISTINCT u from User u left join fetch u.ruoli r where u.id = u.id ");
 
         if (StringUtils.isNotEmpty(example.getNome())) {
             whereClauses.add(" u.nome  like :nome ");
@@ -66,7 +66,7 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
 
         queryBuilder.append(!whereClauses.isEmpty() ? " and " : "");
         queryBuilder.append(StringUtils.join(whereClauses, " and "));
-        TypedQuery<Utente> typedQuery = entityManager.createQuery(queryBuilder.toString(), Utente.class);
+        TypedQuery<User> typedQuery = entityManager.createQuery(queryBuilder.toString(), User.class);
 
         for (String key : paramaterMap.keySet()) {
             typedQuery.setParameter(key, paramaterMap.get(key));

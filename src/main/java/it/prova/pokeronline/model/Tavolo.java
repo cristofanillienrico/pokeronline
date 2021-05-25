@@ -3,7 +3,7 @@ package it.prova.pokeronline.model;
 //Tavolo (sarebbe la partita) coi campi esperienzaMin (cioè il minimo dell’esperienzaAccumulata
 // che gli utenti devono possedere per poter giocare a quel tavolo), cifraMinima (il minimo valore
 // di denaro che si deve possedere per giocare a quel tavolo), denominazione …., data creazione…..
-// Set di Utente (i giocatori) ed un Utente utenteCreazione che è colui che ha creato il tavolo.
+// Set di User (i giocatori) ed un User userCreazione che è colui che ha creato il tavolo.
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -49,36 +49,36 @@ public class Tavolo {
     //utenti giocatori in questo tavolo
     @JsonIgnoreProperties(value = {"tavolo"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tavolo")
-    private Set<Utente> utenti = new HashSet<Utente>(0);
+    private Set<User> utenti = new HashSet<User>(0);
 
     //utente creatore del tavolo
     @JsonIgnoreProperties(value = {"tavolo"})
     @NotNull(message = "{utentecreazioneid.notnull}")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utente_creazione_id")
-    private Utente utenteCreazione;
+    private User userCreazione;
 
 
     public Tavolo() {
     }
 
-    public Tavolo(Long esperienzaMinima, Double cifraMinima, String denominazione, Date dataCreazione, Set<Utente> utenti, Utente utenteCreazione) {
+    public Tavolo(Long esperienzaMinima, Double cifraMinima, String denominazione, Date dataCreazione, Set<User> utenti, User userCreazione) {
         this.esperienzaMinima = esperienzaMinima;
         this.cifraMinima = cifraMinima;
         this.denominazione = denominazione;
         this.dataCreazione = dataCreazione;
         this.utenti = utenti;
-        this.utenteCreazione = utenteCreazione;
+        this.userCreazione = userCreazione;
     }
 
-    public Tavolo(Long id, Long esperienzaMinima, Double cifraMinima, String denominazione, Date dataCreazione, Set<Utente> utenti, Utente utenteCreazione) {
+    public Tavolo(Long id, Long esperienzaMinima, Double cifraMinima, String denominazione, Date dataCreazione, Set<User> utenti, User userCreazione) {
         this.id = id;
         this.esperienzaMinima = esperienzaMinima;
         this.cifraMinima = cifraMinima;
         this.denominazione = denominazione;
         this.dataCreazione = dataCreazione;
         this.utenti = utenti;
-        this.utenteCreazione = utenteCreazione;
+        this.userCreazione = userCreazione;
     }
 
     public Long getId() {
@@ -121,20 +121,20 @@ public class Tavolo {
         this.dataCreazione = dataCreazione;
     }
 
-    public Set<Utente> getUtenti() {
+    public Set<User> getUtenti() {
         return utenti;
     }
 
-    public void setUtenti(Set<Utente> utenti) {
+    public void setUtenti(Set<User> utenti) {
         this.utenti = utenti;
     }
 
-    public Utente getUtenteCreazione() {
-        return utenteCreazione;
+    public User getUtenteCreazione() {
+        return userCreazione;
     }
 
-    public void setUtenteCreazione(Utente utenteCreazione) {
-        this.utenteCreazione = utenteCreazione;
+    public void setUtenteCreazione(User userCreazione) {
+        this.userCreazione = userCreazione;
     }
 
     @Override

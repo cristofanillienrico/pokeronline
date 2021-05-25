@@ -1,8 +1,7 @@
 package it.prova.pokeronline.web.api;
 
-import it.prova.pokeronline.model.Ruolo;
 import it.prova.pokeronline.model.Tavolo;
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 import it.prova.pokeronline.service.RuoloService;
 import it.prova.pokeronline.service.TavoloService;
 import it.prova.pokeronline.service.UtenteService;
@@ -11,7 +10,6 @@ import it.prova.pokeronline.web.api.exception.RuoloNotFoundException;
 import it.prova.pokeronline.web.api.exception.TavoloNotFoundException;
 import it.prova.pokeronline.web.api.exception.UtenteNonTrovatoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,16 +34,16 @@ public class GestioneTavoloController {
 
     @GetMapping
     public List<Tavolo> getAll(@RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
         } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
-            return tavoloService.findAllByUtenteCreazione(utente);
+            return tavoloService.findAllByUtenteCreazione(user);
 
         } else if (ruolo.getCodice().equals("ROLE_ADMIN")) {
             return tavoloService.listAllElements();
@@ -55,18 +53,18 @@ public class GestioneTavoloController {
 
     @GetMapping("/{id}")
     public Tavolo findById(@PathVariable(value = "id", required = true) long id, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
 
         Tavolo tavolo = null;
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
         } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
-            tavolo = tavoloService.findByIdAndUtenteCreazione(id, utente);
+            tavolo = tavoloService.findByIdAndUtenteCreazione(id, user);
 
         } else if (ruolo.getCodice().equals("ROLE_ADMIN")) {
             tavolo = tavoloService.caricaSingoloElemento(id);
@@ -84,11 +82,11 @@ public class GestioneTavoloController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Tavolo createNew(@Valid @RequestBody Tavolo tavoloInput, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
@@ -103,16 +101,16 @@ public class GestioneTavoloController {
 
     @PutMapping("/{id}")
     public Tavolo update(@Valid @RequestBody Tavolo tavoloInput, @PathVariable(required = true) Long id, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
         } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
-            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, utente);
+            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, user);
             if (tavolo == null) {
                 throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
@@ -135,16 +133,16 @@ public class GestioneTavoloController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable(required = true) Long id, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
         } else if (ruolo.getCodice().equals("ROLE_SPECIAL_PLAYER")) {
-            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, utente);
+            Tavolo tavolo = tavoloService.findByIdAndUtenteCreazione(id, user);
             if (tavolo == null) {
                 throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 
@@ -166,11 +164,11 @@ public class GestioneTavoloController {
 
     @PostMapping("/search")
     public List<Tavolo> search(@RequestBody Tavolo example, @RequestHeader("username") String username) {
-        Utente utente = utenteService.findByUsername(username);
-        if (utente == null) {
-            throw new UtenteNonTrovatoException("Utente non trovato");
+        User user = utenteService.findByUsername(username);
+        if (user == null) {
+            throw new UtenteNonTrovatoException("User non trovato");
         }
-        Ruolo ruolo = utente.getRuolo();
+        Ruolo ruolo = user.getRuolo();
         if (ruolo.getCodice().equals("ROLE_PLAYER")) {
             throw new PermessiNonSufficientiException("Stai inviando una richiesta come" + ruolo.getDescrizione());
 

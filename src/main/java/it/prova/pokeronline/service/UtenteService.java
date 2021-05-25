@@ -1,25 +1,25 @@
 package it.prova.pokeronline.service;
 
-import it.prova.pokeronline.model.Utente;
+import it.prova.pokeronline.model.User;
 
 import java.util.List;
 
 public interface UtenteService {
 
-    List<Utente> listAllElements();
+    List<User> listAllElements();
 
-    Utente caricaSingoloElemento(Long id);
+    User caricaSingoloElemento(Long id);
 
-    Utente caricaSingoloElementoEager(Long id);
+    User caricaSingoloElementoEager(Long id);
 
-    Utente aggiorna(Utente utenteInstance);
+    User aggiorna(User userInstance);
 
-    Utente inserisciNuovo(Utente utenteInstance);
+    User inserisciNuovo(User userInstance);
 
-    void rimuovi(Utente utenteInstance);
+    void rimuovi(User userInstance);
 
-    List<Utente> findByExample(Utente example);
+    List<User> findByExample(User example);
 
-    Utente findByUsername(String username);
+    User findByUsername(String username);
 
 }
