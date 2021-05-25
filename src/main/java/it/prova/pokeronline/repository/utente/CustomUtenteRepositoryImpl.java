@@ -60,8 +60,8 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
             paramaterMap.put("stato", example.getStato());
         }
         if (example.getRuolo() != null) {
-            whereClauses.add("u.ruolo = :ruolo ");
-            paramaterMap.put("ruoli", example.getRuolo());
+            whereClauses.add("u.ruolo like :ruolo ");
+            paramaterMap.put("ruoli", "%" + example.getRuolo() + "%");
         }
 
         queryBuilder.append(!whereClauses.isEmpty() ? " and " : "");
