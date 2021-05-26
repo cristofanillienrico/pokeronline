@@ -1,7 +1,8 @@
 package it.prova.pokeronline.service;
 
 import it.prova.pokeronline.model.User;
-import it.prova.pokeronline.repository.utente.UtenteRepository;
+import it.prova.pokeronline.repository.user.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +10,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-public class UtenteServiceImpl implements UtenteService {
+public class UserServiceImpl implements UtenteService {
 
     @Autowired
-    private UtenteRepository repository;
+    private UserRepository repository;
 
 
     @Override
