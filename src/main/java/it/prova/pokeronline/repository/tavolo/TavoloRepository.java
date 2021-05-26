@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTavoloRepository {
 
-    List<Tavolo> findAllByUtenteCreazione(User userCreazione);
+    List<Tavolo> findAllByUserCreazione(User userCreazione);
 
-    Tavolo findByIdAndUtenteCreazione(Long id, User userCreazione);
+    Tavolo findByIdAndUserCreazione(Long id, User userCreazione);
 
-    Tavolo findTavoloByUtentiContains(User user);
+    Tavolo findTavoloByUsersContains(User user);
 
     List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata);
 }

@@ -12,68 +12,67 @@ import java.util.List;
 @Service
 public class TavoloServiceImpl implements TavoloService {
 
-    @Autowired
-    private TavoloRepository repository;
+	@Autowired
+	private TavoloRepository repository;
 
+	@Override
+	public List<Tavolo> listAllElements() {
+		return (List<Tavolo>) repository.findAll();
+	}
 
-    @Override
-    public List<Tavolo> listAllElements() {
-        return (List<Tavolo>) repository.findAll();
-    }
+	@Override
+	public Tavolo caricaSingoloElemento(Long id) {
+		return repository.findById(id).orElse(null);
+	}
 
-    @Override
-    public Tavolo caricaSingoloElemento(Long id) {
-        return repository.findById(id).orElse(null);
-    }
+	@Override
+	public Tavolo caricaSingoloElementoEager(Long id) {
+		return null;
+	}
 
-    @Override
-    public Tavolo caricaSingoloElementoEager(Long id) {
-        return null;
-    }
+	@Transactional
+	public Tavolo aggiorna(Tavolo tavoloInstance) {
+		if (!tavoloInstance.getUtenti().isEmpty()) {
+			throw new RuntimeException("Il tavolo non è vuoto");
+		}
+		return repository.save(tavoloInstance);
+	}
 
-    @Transactional
-    public Tavolo aggiorna(Tavolo tavoloInstance) {
-        if (!tavoloInstance.getUtenti().isEmpty()) {
-            throw new RuntimeException("Il tavolo non è vuoto");
-        }
-        return repository.save(tavoloInstance);
-    }
+	@Transactional
+	public Tavolo inserisciNuovo(Tavolo tavoloInstance) {
+		return repository.save(tavoloInstance);
+	}
 
-    @Transactional
-    public Tavolo inserisciNuovo(Tavolo tavoloInstance) {
-        return repository.save(tavoloInstance);
-    }
+	@Transactional
+	public void rimuovi(Tavolo tavoloInstance) {
+		if (!tavoloInstance.getUtenti().isEmpty()) {
+			throw new RuntimeException("Il tavolo non è vuoto");
+		}
+		repository.delete(tavoloInstance);
+	}
 
-    @Transactional
-    public void rimuovi(Tavolo tavoloInstance) {
-        if (!tavoloInstance.getUtenti().isEmpty()) {
-            throw new RuntimeException("Il tavolo non è vuoto");
-        }
-        repository.delete(tavoloInstance);
-    }
+	@Override
+	public List<Tavolo> findByExample(Tavolo example) {
+		return repository.findByExample(example);
+	}
 
-    @Override
-    public List<Tavolo> findByExample(Tavolo example) {
-        return repository.findByExample(example);
-    }
+	@Override
+	public List<Tavolo> findAllByUtenteCreazione(User userCreazione) {
+		return repository.findAllByUserCreazione(userCreazione);
+	}
 
-    @Override
-    public List<Tavolo> findAllByUtenteCreazione(User userCreazione) {
-        return repository.findAllByUtenteCreazione(userCreazione);
-    }
+	@Override
+	public Tavolo findByIdAndUtenteCreazione(Long id, User userCreazione) {
+		return repository.findByIdAndUserCreazione(id, userCreazione);
+	}
 
-    @Override
-    public Tavolo findByIdAndUtenteCreazione(Long id, User userCreazione) {
-        return repository.findByIdAndUtenteCreazione(id, userCreazione);
-    }
+	@Override
+	public Tavolo findTavoloByUtentiContains(User user) {
+		return repository.findTavoloByUsersContains(user);
+	}
 
-    @Override
-    public Tavolo findTavoloByUtentiContains(User user) {
-        return repository.findTavoloByUtentiContains(user);
-    }
-
-    @Override
-    public List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata) {
-        return repository.findAllByEsperienzaMinimaIsLessThanEqual(esperienzaAccumulata);
-    }
+	@Override
+	public List<Tavolo> findAllByEsperienzaMinimaIsLessThanEqual(Long esperienzaAccumulata) {
+		return repository.findAllByEsperienzaMinimaIsLessThanEqual(esperienzaAccumulata);
+	}
 }
