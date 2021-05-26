@@ -13,8 +13,7 @@
 				"url": "jdbc:mysql://localhost:3306/",
 				"home": "C:\\Program Files\\MySQL\\MySQL Server 8.0",
 				"type": "dev",
-				"auth-model": "native",
-				"handlers": {}
+				"auth-model": "native"
 			},
 			"custom-properties": {
 				"database.meta.separate.connection": "false"
